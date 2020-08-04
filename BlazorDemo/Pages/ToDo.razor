@@ -1,0 +1,76 @@
+﻿@page "/todo"
+@inject HttpClient Http
+
+<h3>To-do list</h3>
+
+@if (items == null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Created Date</th>
+				<th>Description</th>
+				<th>Is Complete</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in items)
+			{
+				<tr>
+					<td>@item.CreatedDate</td>
+					<td>@item.Description</td>
+					<td><input type="checkbox" @bind="item.IsComplete" /> @item.IsComplete</td>
+					<td><button @onclick="() => Remove(item)"><i class="oi oi-trash"></i></button></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+	<input @bind="newItemDescription" />
+	<button @onclick="Add">Add</button>
+}
+
+@code {
+	private IList<ToDoItem> items;
+	private string newItemDescription;
+
+	protected override async Task OnInitializedAsync()
+	{
+		items = await Http.GetFromJsonAsync<List<ToDoItem>>("sample-data/todo.json");
+	}
+
+	private void Add()
+	{
+		if (string.IsNullOrEmpty(newItemDescription))
+			return;
+
+		items.Add(new ToDoItem
+		{
+			Id = Guid.NewGuid(),
+			CreatedDate = DateTime.Now,
+			Description = newItemDescription
+		});
+
+		newItemDescription = string.Empty;
+	}
+
+	private void Remove(ToDoItem item)
+	{
+		items.Remove(item);
+	}
+
+	public class ToDoItem
+	{
+		public Guid Id { get; set; }
+
+		public string Description { get; set; }
+
+		public bool IsComplete { get; set; }
+
+		public DateTime CreatedDate { get; set; }
+	}
+}
