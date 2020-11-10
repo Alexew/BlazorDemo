@@ -15,6 +15,7 @@ else
 				<th>Created Date</th>
 				<th>Description</th>
 				<th>Is Complete</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -24,14 +25,18 @@ else
 					<td>@item.CreatedDate</td>
 					<td>@item.Description</td>
 					<td><input type="checkbox" @bind="item.IsComplete" /> @item.IsComplete</td>
-					<td><button @onclick="() => Remove(item)"><i class="oi oi-trash"></i></button></td>
+					<td><button class="btn btn-primary" @onclick="() => Remove(item)"><i class="oi oi-trash"></i></button></td>
 				</tr>
 			}
 		</tbody>
 	</table>
 
-	<input @bind="newItemDescription" />
-	<button @onclick="Add">Add</button>
+	<form class="form-inline">
+		<div class="form-group mx-sm-3 mb-2">
+			<input class="form-control" @bind="newItemDescription" />
+		</div>
+		<button type="button" class="btn btn-primary mb-2" @onclick="Add">Add</button>
+	</form>
 }
 
 @code {
